@@ -27,8 +27,18 @@ public:
 		lpOriginalFunc = GetProcAddress(hModule, "MessageBoxA");
 
 		DWORD proxy_func_address = (DWORD)&ProxyFunc;
+		/* Patch:
+			nop
+			nop
+			nop
+			push proxy_func_address
+			nop
+			nop
+			nop
+			ret
+		*/
 		memcpy(Patch, "\x90\x90\x90", 3);
-		memcpy(Patch + 3, "\x068", 1);
+		memcpy(Patch + 3, "\x68", 1);
 		memcpy(Patch + 4, &proxy_func_address, 4);
 		memcpy(Patch + 8, "\x90\x90\x90", 3);
 		memcpy(Patch + 11, "\xc3", 1);
